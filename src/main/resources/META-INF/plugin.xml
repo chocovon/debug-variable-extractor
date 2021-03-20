@@ -1,0 +1,17 @@
+<idea-plugin>
+    <id>com.github.chocovon.debug-variable-extractor</id>
+    <name>Debug Variable Extractor</name>
+    <vendor url="https://github.com/chocovon">chocovon</vendor>
+
+    <description>Extract JSON from variables in debugger. </description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <actions>
+        <action id="debugVarAction" class="action.DebugVarAction" text="Copy as JSON String" description="Serialize selected node to JSON and copy to clipboard">
+            <add-to-group group-id="XDebugger.ValueGroup" anchor="after" relative-to-action="XDebugger.CopyName"/>
+        </action>
+    </actions>
+</idea-plugin>
