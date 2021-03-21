@@ -4,15 +4,12 @@ import com.sun.jdi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ValueJsonSerializer {
     public static final String JAVA_LANG_OBJECT = "java.lang.Object";
 
-    private static long timeLimit = 3000;
+    private static long timeLimit = 7000;
     private static long timeStamp;
 
     public static String toJson(Value value, ThreadReference thread, Set<Long> refPath) {
@@ -90,19 +87,18 @@ public class ValueJsonSerializer {
             if (isSimpleObject(allInheritedTypes)) {
                 return toJsonInner(objectValue.getValue(((ClassType)value.type()).fieldByName("value")), thread, refPath);
             } else if (allInheritedTypes.contains("java.util.Map")) {
-                ObjectReference entrySet = (ObjectReference) invokeMethod(objectValue, "entrySet", thread);
-                if (entrySet == null) {
-                    throw new JsonSerializeException("EntrySet of Map returns null : " + toValRefString(objectValue));
+                ObjectReference keySet = (ObjectReference) invokeMethod(objectValue, "keySet", thread);
+                if (keySet == null) {
+                    throw new JsonSerializeException("KeySet of Map returns null : " + toValRefString(objectValue));
                 }
-                ArrayReference entryArr = (ArrayReference) invokeMethod(entrySet, "toArray", thread);
-                if (entryArr == null) {
-                    throw new JsonSerializeException("EntrySet convert failed : " + toValRefString(entrySet));
+                ArrayReference keyArr = (ArrayReference) invokeMethod(keySet, "toArray", thread);
+                if (keyArr == null) {
+                    throw new JsonSerializeException("KeySet convert failed : " + toValRefString(keySet));
                 }
                 StringBuilder str = new StringBuilder();
                 str.append("{");
-                for (Value entry : entryArr.getValues()) {
-                    Value key = invokeMethod((ObjectReference) entry, "getKey", thread);
-                    Value val = invokeMethod((ObjectReference) entry, "getValue", thread);
+                for (Value key : keyArr.getValues()) {
+                    Value val = invokeMethod(objectValue, "get", thread, key);
                     String keyStr;
                     if (isSimpleValue(key)) {
                         String simpleValStr = toJsonInner(key, thread, refPath);
@@ -118,7 +114,7 @@ public class ValueJsonSerializer {
                     str.append(keyStr).append(":").append(toJsonInner(val, thread, refPath));
                     str.append(",");
                 }
-                if (entryArr.length() > 0) {
+                if (keyArr.length() > 0) {
                     str.delete(str.length() - 1, str.length());
                 }
                 str.append("}");
@@ -190,11 +186,11 @@ public class ValueJsonSerializer {
     }
 
     @Nullable
-    private static Value invokeMethod(ObjectReference object, String methodName, ThreadReference thread) {
+    private static Value invokeMethod(ObjectReference object, String methodName, ThreadReference thread, Value... args) {
         Method m = object.referenceType()
                 .methodsByName(methodName).get(0);
         try {
-            return object.invokeMethod(thread, m, Collections.emptyList(), 0);
+            return object.invokeMethod(thread, m, Arrays.asList(args), 0);
         } catch (Exception e) {
             e.printStackTrace();
         }
