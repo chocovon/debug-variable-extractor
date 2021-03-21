@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.chocovon'
-version '1.2-SNAPSHOT'
+version '1.2'
 
 repositories {
     mavenCentral()
@@ -25,4 +25,8 @@ patchPluginXml {
 //    changeNotes """
 //      Add change notes here.<br>
 //      <em>most HTML tags may be used</em>"""
+}
+
+publishPlugin {
+    token = System.getProperty("org.gradle.project.intellijPublishToken")
 }
