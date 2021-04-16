@@ -3,7 +3,31 @@
     <name>Debug Variable Extractor</name>
     <vendor url="https://github.com/chocovon">chocovon</vendor>
 
-    <description>Extract JSON from variables in debugger. </description>
+    <description>
+        <![CDATA[
+            <p>
+            Extract JSON from variables in debugger. If you are looking for a more comprehensive tool, see also
+            <a href="https://plugins.jetbrains.com/plugin/16513-debug-variable-save-load">Debug Variable Save Load</a>.
+            </p>
+            <br>
+
+            <h3>Usage</h3>
+            <p>
+            When stopped at breakpoint while debugging,
+            you can right click on a variable and select "Copy as JSON String".
+            The selected variable will be serialized to JSON and get copied to your clipboard.
+            </p>
+            <br>
+            <h3>NOTES</h3>
+            <ul>
+                <li>
+                    This plugin utilizes debugger API, which collects all values available in debugger and thus will
+                    generate a more complete JSON string than
+                    <a href="https://plugins.jetbrains.com/plugin/16513-debug-variable-save-load">Debug Variable Save Load</a>.
+                </li>
+            </ul>
+        ]]>
+    </description>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->

@@ -2,9 +2,12 @@ package util;
 
 import com.sun.jdi.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static util.ValueUtil.invokeMethod;
 
 public class ValueJsonSerializer {
     public static final String JAVA_LANG_OBJECT = "java.lang.Object";
@@ -183,18 +186,6 @@ public class ValueJsonSerializer {
     private static String toValRefString(ObjectReference valRef) {
         long id = valRef.uniqueID();
         return valRef.type().name() + "(id=" + id + ")";
-    }
-
-    @Nullable
-    private static Value invokeMethod(ObjectReference object, String methodName, ThreadReference thread, Value... args) {
-        Method m = object.referenceType()
-                .methodsByName(methodName).get(0);
-        try {
-            return object.invokeMethod(thread, m, Arrays.asList(args), 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @NotNull

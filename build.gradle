@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.chocovon'
-version '1.2'
+version '1.2.2'
 
 repositories {
     mavenCentral()
@@ -21,7 +21,8 @@ intellij {
     plugins 'java'
 }
 patchPluginXml {
-    sinceBuild(162)
+    sinceBuild(173)
+    untilBuild()
 //    changeNotes """
 //      Add change notes here.<br>
 //      <em>most HTML tags may be used</em>"""
